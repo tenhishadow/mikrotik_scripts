@@ -1,0 +1,24 @@
+--- # playbook for tunnel generation ( gre + ipsec )
+
+- hosts: 127.0.0.1
+  gather_facts: no
+  become: no
+  vars_files:
+  - vars/tun.yml
+  tasks:
+  - name: create tempdir for configs
+    tempfile:
+      state: directory
+    register: tempdir
+
+  - name: deploy config for {{ src_location }} to {{ tempdir.path }}/{{ src_location }}.rsc 
+    template:
+      src: tun_src_config.j2
+      dest: "{{ tempdir.path }}/{{ src_location }}.rsc"
+
+  - name: deploy config for {{ dst_location }} to {{ tempdir.path }}/{{ dst_location }}.rsc
+    template:
+      src: tun_dst_config.j2
+      dest: "{{ tempdir.path }}/{{ dst_location }}.rsc"
+
+...

@@ -1,0 +1,25 @@
+# {{ ansible_managed }}
+# {{ src_comment }}
+
+## interface config
+/interface gre add \
+comment="{{ src_comment }}" \
+name="{{ src_iface }}" \
+keepalive="{{ tun_keepalive }}" \
+local-address="{{ src_ip }}" \
+remote-address="{{ dst_ip }}" \
+allow-fast-path="no" \
+ipsec-secret="{{ ipsec_secret }}"
+
+## ip address config
+/ip address add \
+comment="{{ src_comment }}" \
+address="{{ src_tun_ip }}/{{ tun_netmask }}" \
+interface="{{ src_iface }}"
+
+## static route config
+/ip route add \
+comment="{{ src_comment }}" \
+dst-address="{{ dst_lan_net }}" \
+gateway="{{ dst_tun_ip }}" \
+pref-src="{{ src_lan_gw }}"
