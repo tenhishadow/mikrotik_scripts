@@ -1,0 +1,31 @@
+---
+
+# manage snmp
+manage_snmp: yes
+
+snmp_trap:
+  contact: "user@example.com"
+  location: "gl01"
+  version: "2"
+  community: "cmnt1"
+  target: "8.8.8.8"
+
+snmp_community:
+  cmnt1:
+    addresses: "8.8.8.8/32"
+    auth_pass: "TCoNc5UBrhUpiLY1dsPa"
+    enc_pass: "diAS4wfghHGZyKAJdkXB"
+    auth_proto: "SHA1"
+    enc_proto: "DES"
+    read: "yes"
+    write: "no"
+  cmnt2:
+    addresses: "4.4.4.4/32,1.1.1.1/32"
+    auth_pass: "Fi6aOzWCT73mbIOqq9G4"
+    enc_pass: "1ET2RGJcEI8IQminMrqt"
+    auth_proto: "SHA1"
+    enc_proto: "DES"
+    read: "yes"
+    write: "no"
+
+...

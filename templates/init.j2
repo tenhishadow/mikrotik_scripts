@@ -1,0 +1,40 @@
+# {{ ansible_managed }}
+
+{% if manage_snmp is sameas true %}
+# manage default ( i dont like any defaults )
+/snmp community \
+set [ find default=yes ] \
+addresses="127.0.0.1/32" \
+authentication-password="TCoNc5UBrhUpiLY1dsPa" \
+encryption-password="diAS4wfghHGZyKAJdkXB" \
+authentication-protocol="SHA1" \
+encryption-protocol="DES" \
+name="disabled" \
+security="private" \
+read-access="no" \
+write-access="no"
+
+# manage additional
+{% for (key,value) in snmp_community.iteritems() %}
+/snmp community add \
+name="{{ key }}" \
+addresses="{{ value.addresses }}" \
+authentication-password="{{ value.auth_pass }}" \
+encryption-password="{{ value.enc_pass }}" \
+authentication-protocol="{{ value.auth_proto }}" \
+encryption-protocol="{{ value.enc_proto }}" \
+security="private" \
+read-access="{{ value.read }}" \
+write-access="{{ value.write }}"
+
+{% endfor %}
+
+# configure basic params
+/snmp set \
+contact="{{ snmp_trap.contact }}" \
+enabled="yes" \
+location="{{ snmp_trap.location }}" \
+trap-community="{{ snmp_trap.community }}" \
+trap-version="{{ snmp_trap.version }}" \
+trap-target="{{ snmp_trap.target }}"
+{% endif %}

@@ -1,0 +1,19 @@
+--- # playbook for create init config
+
+- hosts: 127.0.0.1
+  gather_facts: no
+  become: no
+  vars_files:
+  - vars/init.yml
+  tasks:
+  - name: create tempdir for configs
+    tempfile:
+      state: directory
+    register: tempdir
+
+  - name: deploy config to {{ tempdir.path }}/init.rsc 
+    template:
+      src: init.j2
+      dest: "{{ tempdir.path }}/init.rsc"
+
+...
