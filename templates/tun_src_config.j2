@@ -23,3 +23,9 @@ comment="{{ src_comment }}" \
 dst-address="{{ dst_lan_net }}" \
 gateway="{{ dst_tun_ip }}" \
 pref-src="{{ src_lan_gw }}"
+
+## fix dyn ipsec
+/system scheduler
+add interval=10m \
+name="fix_dyn_ipsec_{{ src_iface }}" \
+on-event="/interface gre set [find name={{ src_iface }}] remote-address=[:resolve {{ dst_ip }}] local-address=[:resolve {{ src_ip }}]"
