@@ -8,7 +8,7 @@ src_isp: 'provider1'
 dst_isp: 'provider2'
 
 # network config
-## external ip addresses
+## fqnd only here
 src_ip: '10.1.100.1'
 dst_ip: '10.1.200.1'
 ## LAN config
