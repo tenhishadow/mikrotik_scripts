@@ -27,5 +27,7 @@ pref-src="{{ src_lan_gw }}"
 ## fix dyn ipsec
 /system scheduler
 add interval=10m \
+start-date=jan/01/1970 \
+start-time=01:00:00 \
 name="fix_dyn_ipsec_{{ src_iface }}" \
 on-event="/interface gre set [find name={{ src_iface }}] remote-address=[:resolve {{ dst_ip }}] local-address=[:resolve {{ src_ip }}]"
