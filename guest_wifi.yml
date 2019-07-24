@@ -1,0 +1,19 @@
+--- # playbook for guest wifi configuration
+
+- hosts: 127.0.0.1
+  gather_facts: no
+  become: no
+  vars_files:
+  - vars/guest_wifi.yml
+  tasks:
+  - name: create tempdir for configs
+    tempfile:
+      state: directory
+    register: tempdir
+
+  - name: deploy config for guest wifi
+    template:
+      src: guest_wifi_config.j2
+      dest: "{{ tempdir.path }}/guest_wifi.rsc"
+
+...

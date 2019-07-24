@@ -1,0 +1,23 @@
+---
+
+deny_to:
+- "10.0.0.0/8"
+- "100.64.0.0/10"
+- "172.16.0.0/12"
+- "192.168.0.0/16"
+
+
+
+# check it
+network
+  address: "192.168.3.0/24"
+  dns:
+  - "1.1.1.1"
+  - "1.0.0.1"
+
+wlan:
+  master: wlan1
+  essid: guest.lan
+  password: xxx
+
+...

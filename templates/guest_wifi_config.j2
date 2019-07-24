@@ -1,0 +1,58 @@
+/interface wireless security-profiles
+add authentication-types="wpa2-psk" \
+management-protection="allowed" \
+mode="dynamic-keys" \
+name="guest.lan" \
+wpa2-pre-shared-key="tenhi_guest701"
+
+# add new interface
+add name="wlan_guest" \
+disabled="no" \
+keepalive-frames="disabled" \
+master-interface="wlan1" \
+multicast-buffering="disabled" \
+security-profile="guest.lan" \
+ssid="guest.lan" \
+wps-mode="push-button-virtual-only"
+
+# create guest bridge
+/interface bridge \
+add auto-mac="yes" \
+name="brguest" \
+comment="guest" \
+arp="reply-only"
+
+# add port into bridge
+/interface bridge port \
+add interface="wlan_guest" \
+bridge="brguest"
+
+# assign ip address to bridge
+/ip address add address="192.168.3.1/24" comment="guest" interface="brguest"
+
+# create dhcp pool
+/ip pool
+add name="guest.lan" ranges="192.168.103.50-192.168.103.200"
+
+# configure dhcp server
+/ip dhcp-server
+add add-arp="yes" address-pool="guest.lan" disabled="no" interface="brguest" lease-time="20m" name="guest.lan"
+
+# configure dhcp network
+/ip dhcp-server network
+add address="192.168.3.0/24" comment="guest" dns-server="{% for dns_server in network.dns %} " domain="guest.lan" gateway="192.168.103.1"
+
+# deny to local resources
+/ip route rule
+{% for network in deny_to %}
+add comment="guest" src-address="192.168.3.0/24" dst-address="{{ network }}" action="unreachable"
+{% endfor %}
+
+# limit speed
+/queue simple
+add name=guest.lan \
+target="192.168.103.0/24" \
+max-limit=512k/3M
+burst-limit=1M/5M \
+burst-threshold=500k/4M \
+burst-time=10s/10s
