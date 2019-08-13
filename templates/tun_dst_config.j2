@@ -24,6 +24,10 @@ dst-address="{{ src_lan_net }}" \
 gateway="{{ src_tun_ip }}" \
 pref-src="{{ dst_lan_gw }}"
 
+## nat
+/ip firewall nat
+add action=masquerade chain=srcnat src-address="{{ dst_lan_net }}" dst-address="{{ src_lan_net }}" out-interface="{{ dst_iface }}" comment="{{ dst_comment }}"
+
 ## fix dyn ipsec
 /system scheduler
 add interval=10m \
