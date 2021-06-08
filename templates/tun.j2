@@ -1,0 +1,51 @@
+# {{ ansible_managed }}
+{% if side == 'src' %}
+  {% set comment = src_comment %}
+  {% set iface   = src_iface %}
+  {% set tun_ip  = src_tun_ip %}
+  {% set relative_src_ip  = src_ip %}
+  {% set relative_dst_ip  = dst_ip %}
+{% elif side == 'dst' %}
+  {% set comment = dst_comment %}
+  {% set iface   = dst_iface %}
+  {% set tun_ip  = dst_tun_ip %}
+  {% set relative_src_ip  = dst_ip %}
+  {% set relative_dst_ip  = src_ip %}
+{% endif %}
+# {{ comment }}
+
+## interface config
+/interface gre add \
+  comment="{{ comment }}" \
+  name="{{ iface }}" \
+  keepalive="{{ tun_keepalive }}" \
+  local-address="{{ lookup('dig', relative_src_ip )}}" \
+  remote-address="{{ lookup('dig', relative_dst_ip )}}" \
+  allow-fast-path="no" \
+  ipsec-secret="{{ ipsec_secret }}"
+/interface list member add \
+  list=LAN \
+  comment="{{ comment }}" \
+  interface="{{ iface }}"
+/ip address add \
+  comment="{{ comment }}" \
+  address="{{ tun_ip }}/{{ tun_netmask }}" \
+  interface="{{ iface }}"
+
+## ospf
+/routing ospf interface \
+  add interface={{ iface }} \
+  comment="{{ comment }}" \
+  network-type=point-to-point
+/routing ospf network \
+  add area=backbone
+  comment="{{ comment }}" \
+  network="{{ (tun_ip + '/' + tun_netmask) | ipaddr('network/prefix') }}"
+
+## fix dyn ipsec
+/system scheduler
+  add interval=1m \
+  start-date=jan/01/1970 \
+  start-time=00:01:01 \
+  name="fix_dyn_ipsec_{{ iface }}" \
+  on-event="/interface gre set [find name={{ iface }}] remote-address=[:resolve {{relative_src_ip}}] local-address=[:resolve {{relative_dst_ip}}]"
