@@ -38,7 +38,7 @@
   comment="{{ comment }}" \
   network-type=point-to-point
 /routing ospf network \
-  add area=backbone
+  add area=backbone \
   comment="{{ comment }}" \
   network="{{ (tun_ip + '/' + tun_netmask) | ipaddr('network/prefix') }}"
 
@@ -48,4 +48,4 @@
   start-date=jan/01/1970 \
   start-time=00:01:01 \
   name="fix_dyn_ipsec_{{ iface }}" \
-  on-event="/interface gre set [find name={{ iface }}] remote-address=[:resolve {{relative_src_ip}}] local-address=[:resolve {{relative_dst_ip}}]"
+  on-event="/interface gre set [find name={{ iface }}] remote-address=[:resolve {{relative_dst_ip}}] local-address=[:resolve {{relative_src_ip}}]"
