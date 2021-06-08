@@ -4,8 +4,8 @@
 ## location names
 src_location: 'gl1'
 dst_location: 'gl2'
-src_isp: 'provider1'
-dst_isp: 'provider2'
+src_isp: 'isp1'
+dst_isp: 'isp1'
 
 # network config
 ## fqnd only here
