@@ -11,6 +11,10 @@ remote-address="{{ src_ip }}" \
 allow-fast-path="no" \
 ipsec-secret="{{ ipsec_secret }}"
 
+/interface list member add \
+  list=LAN \
+  interface="{{ dst_iface }}"
+
 ## ip address config
 /ip address add \
 comment="{{ dst_comment }}" \
